@@ -12,6 +12,8 @@ local.properties
 .loadpath
 *.orig
 buildtools/
+*.conf
+*.log
 
 # Maven
 target/

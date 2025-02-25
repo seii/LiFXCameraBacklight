@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.jiyuu_ni</groupId>
+  <artifactId>LiFXCameraBacklight</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>LiFXCameraBacklight</name>
+  <description>A simple LiFXCameraBacklight.</description>
+  <url>https://jiyuu-ni.net</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <junit.version>5.11.4</junit.version>
+    <webcam.capture.version>0.3.12</webcam.capture.version>
+    <lifx.lan.sdk.version>1.1-SNAPSHOT</lifx.lan.sdk.version>
+    <jackson.databind.version>2.18.2</jackson.databind.version>
+    <logback.classic.version>1.5.16</logback.classic.version>
+    <slf4j.api.version>2.0.16</slf4j.api.version>
+  </properties>
+  
+  <repositories>
+    <repository>
+	    <id>lib</id>
+	    <name>lib</name>
+	    <releases>
+	        <enabled>true</enabled>
+	        <checksumPolicy>ignore</checksumPolicy>
+	    </releases>
+	    <snapshots>
+	        <enabled>true</enabled>
+	    </snapshots>
+	    <url>file://${project.basedir}/lib</url>
+	  </repository>
+  </repositories>
+
+  <dependencyManagement>
+      <dependencies>
+      	  <!-- Include JUnit 5 BOM to lock JUnit dependencies on same version -->
+          <dependency>
+              <groupId>org.junit</groupId>
+              <artifactId>junit-bom</artifactId>
+              <version>${junit.version}</version>
+              <type>pom</type>
+              <scope>import</scope>
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+	<dependency>
+	    <groupId>com.github.sarxos</groupId>
+	    <artifactId>webcam-capture</artifactId>
+	    <version>${webcam.capture.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.stuntguy3000</groupId>
+		<artifactId>lifx-lan-sdk</artifactId>
+		<version>${lifx.lan.sdk.version}</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>${jackson.databind.version}</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+	<dependency>
+	    <groupId>ch.qos.logback</groupId>
+	    <artifactId>logback-classic</artifactId>
+	    <version>${logback.classic.version}</version>
+	    <!--<scope>compile</scope>-->
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>${slf4j.api.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.junit.jupiter</groupId>
+		<artifactId>junit-jupiter</artifactId>
+		<scope>test</scope>
+	</dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.4.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.12.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.6.1</version>
+        </plugin>
+        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.4.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.1.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+		<plugin>
+			<artifactId>maven-assembly-plugin</artifactId>
+	        <version>3.7.1</version>
+	        <configuration>
+				<descriptorRefs>
+				  <descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+				<archive>
+					<manifest>
+					    <mainClass>net.jiyuu_ni.LiFXCameraBacklight.App</mainClass>
+					</manifest>
+				</archive>
+	        </configuration>
+	        <executions>
+	          <execution>
+	            <id>make-assembly</id>  <!-- this is used for inheritance merges -->
+	            <phase>package</phase>  <!-- bind to the packaging phase -->
+	            <goals>
+	              <goal>single</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+		</plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
