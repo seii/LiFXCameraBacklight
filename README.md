@@ -30,7 +30,7 @@ Run `mvn clean package` inside the root of this repository to generate two JAR f
 
 ## Compatibility
 ### Operating System
-Only Linux and Windows have officially been tested as working. However, as this program is built in Java it is theoretically possible that it will run anywhere a Java Virtual Machine does.
+Only Linux and Windows have officially been tested as working. However, as this program is built in Java it is theoretically possible that it will run anywhere a Java Virtual Machine does. There are also some bug reports  for the `webcam-capture` dependency which suggest a dependency of theirs may prevent ARM-based systems from working correctly with webcams.
 
 ### LiFX
 This program should work with any LiFX product which is both supported by the [LIFX-LAN-SDK](https://github.com/stuntguy3000/LIFX-LAN-SDK) project and is also specifically marked as multizone-compatible according to LiFX's own [compatibility file](https://github.com/LIFX/products) hosted on GitHub.
