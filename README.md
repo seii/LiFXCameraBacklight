@@ -9,9 +9,10 @@ With this program one or more cameras (typically webcams) attached to a computer
 - Support for multiple cameras at once
 - Configurable  layouts, allowing any one camera to use the `LEFT`, `RIGHT`, `TOP`, `BOTTOM`, or `CENTER` of the image it sees to drive the lighting
 - Multiple layouts allowed per camera; for example, one camera can use one `LEFT` layout to power a light on the left and one `RIGHT` layout to power a different light on the right
+- Only triggers based on motion, so no signals are sent to lights if webcams face a static image or powered-off TV
+- Motion events can be optionally ignored if the image is not bright enough (threshold for brightness is configurable)
 - Provides an optional graphical JFrame window (on systems which allow graphics) of feeds for any configured cameras so you know how to move the cameras to get the right image
 - Does not power on or off LiFX lights by itself, leaving that power in the user's hands
-- Only triggers based on motion, so no signals are sent to lights if webcams face a static image or powered-off TV
 
 ## Usage
 1. Connect at least one webcam to the system you are going to run this program on
