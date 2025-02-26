@@ -23,18 +23,23 @@ public class ConfigFile {
 	// List of bindings between a piece of the screen and a light
 	private final List<ScreenLayout> LAYOUT_LIST;
 	
+	// Brightness detection settings
+	private final BrightnessDetection BRIGHTNESS;
+	
 	// Whether to show a preview GUI of the webcam(s)
 	private final boolean SHOW_GUI;
 	
 	@ConstructorProperties({"log_path", "broadcast_ip_address", "webcam_list",
-		"layout_list", "show_gui"})
+		"layout_list", "brightness_detection", "show_gui"})
 	public ConfigFile(Path logPath, String ipAddress, List<String> webcamList,
-			List<ScreenLayout> layoutList, boolean showGui) {
+			List<ScreenLayout> layoutList, BrightnessDetection brightness,
+			boolean showGui) {
 		super();
 		this.LOG_FILE_PATH = logPath;
 		this.NETWORK_BROADCAST_ADDRESS = ipAddress;
 		this.WEBCAM_LIST = webcamList;
 		this.LAYOUT_LIST = layoutList;
+		this.BRIGHTNESS = brightness;
 		this.SHOW_GUI = showGui;
 	}
 	
@@ -56,6 +61,11 @@ public class ConfigFile {
 	@JsonProperty("layout_list")
 	public List<ScreenLayout> getLayoutList() {
 		return LAYOUT_LIST;
+	}
+	
+	@JsonProperty("brightness_detection")
+	public BrightnessDetection getBrightness() {
+		return BRIGHTNESS;
 	}
 
 	@JsonProperty("show_gui")
@@ -86,8 +96,10 @@ public class ConfigFile {
 			tempLayoutList.add(tempLayout);
 		}
 		
+		BrightnessDetection tempBright = new BrightnessDetection(false, 0.1f);
+		
 		return new ConfigFile(tempPath, ipAddress, tempWebcamList,
-				tempLayoutList, false);
+				tempLayoutList, tempBright, false);
 	}
 
 	@Override
@@ -110,6 +122,12 @@ public class ConfigFile {
 			sb.append("  * ");
 			sb.append(layout.toString());
 		}
+		
+		sb.append("\nBrightness Detection:");
+		sb.append("  * Enabled: ");
+		sb.append(BRIGHTNESS.isEnabled());
+		sb.append("\n  * Threshold: ");
+		sb.append(BRIGHTNESS.getThreshold());
 		
 		sb.append("\nShow GUI: ");
 		sb.append(SHOW_GUI);

@@ -35,39 +35,67 @@ public class CamListener implements WebcamMotionListener {
     	BufferedImage image = webcam.getImage();
     	
     	if(image != null) {
-    		if(App.multiZoneMap != null && !App.multiZoneMap.isEmpty()) {
-    			// Check each layout for any that match the webcam which detected motion
-        		for(ScreenLayout layout : App.currentConfig.getLayoutList()) {
-        			if(webcam.getName().equals(layout.getCameraName())) {
-        				// Get a reference to the specific multi zone-compatible device
-        				MultiZone tempZone = App.multiZoneMap.get(
-        						layout.getMultiZoneMAC());
-        				
-        				if(tempZone != null) {
-        					logger.debug("Calculating new colors for {}",
+    		boolean isBrightEnough = true;
+    		
+    		if(App.currentConfig != null &&
+    				App.currentConfig.getBrightness().isEnabled()) {
+    			if(App.currentConfig.getBrightness().getThreshold() > 0.0f
+    				&& App.currentConfig.getBrightness().getThreshold() <= 1.0f) {
+    				isBrightEnough = !ColorUtil.isImageTooDark(image,
+    						App.currentConfig.getBrightness().getThreshold());
+    			}else {
+    				logger.warn("Brightness detection has been enabled, but the " +
+    						"threshold is an invalid value of {}. Please use valid " +
+    						"values between 0.0 and 1.0.",
+    						App.currentConfig.getBrightness().getThreshold());
+    			}
+    		}else {
+    			logger.debug("Brightness detection was either not present or " +
+    					"disabled in the current configuration. It will be assumed"
+    					+ "that the image is bright enough for motion detection.");
+    		}
+    		
+    		if(isBrightEnough) {
+    			logger.debug("Brightness detection passed");
+    			
+    			if(App.multiZoneMap != null && !App.multiZoneMap.isEmpty()) {
+        			// Check each layout for any that match the webcam which detected motion
+            		for(ScreenLayout layout : App.currentConfig.getLayoutList()) {
+            			if(webcam.getName().equals(layout.getCameraName())) {
+            				// Get a reference to the specific multi zone-compatible device
+            				MultiZone tempZone = App.multiZoneMap.get(
             						layout.getMultiZoneMAC());
             				
-            				// Calculate colors to set
-            				Color[] tempColors = ColorUtil.getColorFromImage(image,
-            						layout.getPosition(),
-            						tempZone.getZonesCount());
-            				
-            				logger.debug("Setting multi-zone colors for {}",
-            						layout.getMultiZoneMAC());
-            				tempZone.setExtendedColorZones(0, 0, false, tempColors);
-        				}else {
-        					logger.error("Unable to set colors for device MAC {} " +
-        							"using camera {} as that MAC did not match any " +
-        							"detected LiFX device.",
-        							layout.getMultiZoneMAC(), layout.getCameraName());
-        				}
-        			}
+            				if(tempZone != null) {
+            					logger.debug("Calculating new colors for {}",
+                						layout.getMultiZoneMAC());
+                				
+                				// Calculate colors to set
+                				Color[] tempColors = ColorUtil.getColorFromImage(image,
+                						layout.getPosition(),
+                						tempZone.getZonesCount());
+                				
+                				logger.debug("Setting multi-zone colors for {}",
+                						layout.getMultiZoneMAC());
+                				tempZone.setExtendedColorZones(0, 0, false, tempColors);
+            				}else {
+            					logger.error("Unable to set colors for device MAC {} " +
+            							"using camera {} as that MAC did not match any " +
+            							"detected LiFX device.",
+            							layout.getMultiZoneMAC(),
+            							layout.getCameraName());
+            				}
+            			}
+            		}
+        		}else {
+        			logger.error("No LiFX devices found or no layouts defined in " +
+        					"configuration file. Please attach a multi-zone compatible " +
+        					"LiFX device and/or define a layout using at least one device" +
+        					"in the configuration file.");
         		}
     		}else {
-    			logger.error("No LiFX devices found or no layouts defined in " +
-    					"configuration file. Please attach a multi-zone compatible " +
-    					"LiFX device and/or define a layout using at least one device" +
-    					"in the configuration file.");
+    			logger.debug("Brightness detection determined that the image was " +
+    					"too dark to accurately detect motion");
     		}
     	}else {
     		logger.warn("No image was returned from the webcam, so no color " +
