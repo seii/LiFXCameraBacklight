@@ -29,10 +29,10 @@ import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.stuntguy3000.lifxlansdk.handler.PacketHandler;
 import com.stuntguy3000.lifxlansdk.helper.MultiZoneHelper;
-import com.stuntguy3000.lifxlansdk.object.product.Device;
 import com.stuntguy3000.lifxlansdk.object.product.MultiZone;
 
 import ch.qos.logback.classic.LoggerContext;
+import net.jiyuu_ni.LiFXCameraBacklight.config.BrightnessDetection;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ConfigFile;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ScreenLayout;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ScreenLayout.LayoutPosition;
@@ -58,6 +58,7 @@ public class App
 	private static final String DEFAULT_MAC_ADDRESS = "00-NO-TR-EA-L0-00";
 	private static final ObjectMapper jsonMapper = new ObjectMapper();
 	private static final Logger logger = LoggerFactory.getLogger(App.class);
+	private static final App currentInstance = new App();
 	
 	// TODO: Watch / handle camera connection / disconnection
 	// TODO: Separate logic so less is being done in "main"
@@ -200,14 +201,15 @@ public class App
 						"names and LiFX information (already detected above) to " +
 						"fill out a valid configuration file. Once configured, " +
 						"restart this program.",
-						webcamList.get(0).getName());
+						webcamList.get(0).getName()); 
 				
 				// Make sure internal config is rewritten to be consistent
 				//    with the "using only default webcam" and "first detected"
 				//    LiFX device or fake values" approach
 				currentConfig = new ConfigFile(Path.of(""), NETWORK_BROADCAST_ADDRESS,
 						Collections.singletonList(webcamList.get(0).getName()),
-						Collections.singletonList(tempScreenLayout), false);
+						Collections.singletonList(tempScreenLayout),
+						BrightnessDetection.createDefaultConfig(), false);
 				
 				// Save the default config, which if at all possible now
 				//    contains some real cameras and devices detected on
@@ -246,7 +248,7 @@ public class App
     {
     	logger.trace("Entering main");
     	
-    	App currentInstance = new App();
+    	//App currentInstance = new App();
   	
     	for(WebcamMotionDetector detector : detectorList) {
     		logger.info("Starting motion detector for {}",
