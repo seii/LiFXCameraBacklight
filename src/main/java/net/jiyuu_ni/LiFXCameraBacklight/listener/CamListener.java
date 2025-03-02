@@ -1,4 +1,4 @@
-package net.jiyuu_ni.LiFXCameraBacklight;
+package net.jiyuu_ni.LiFXCameraBacklight.listener;
 
 import java.awt.image.BufferedImage;
 
@@ -11,6 +11,7 @@ import com.github.sarxos.webcam.WebcamMotionListener;
 import com.stuntguy3000.lifxlansdk.object.product.MultiZone;
 import com.stuntguy3000.lifxlansdk.object.protocol.Color;
 
+import net.jiyuu_ni.LiFXCameraBacklight.App;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ScreenLayout;
 import net.jiyuu_ni.LiFXCameraBacklight.util.ColorUtil;
 
@@ -19,7 +20,7 @@ public class CamListener implements WebcamMotionListener {
 	private static final Logger logger = LoggerFactory.getLogger(CamListener.class);
 
 	public CamListener() {
-		super();
+		super();	
 	}
 	
 	@Override

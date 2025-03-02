@@ -5,8 +5,19 @@ import java.beans.ConstructorProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ScreenLayout {
+	/**
+	 * Description of which screen position this layout refers to
+	 */
 	private final LayoutPosition position;
+	
+	/**
+	 * Name of the camera to associate with this layout
+	 */
 	private final String cameraName;
+	
+	/**
+	 * MAC address of the LiFX device to associate with this layout
+	 */
 	private final String multiZoneMAC;
 	
 	public enum LayoutPosition {

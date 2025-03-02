@@ -36,6 +36,8 @@ import net.jiyuu_ni.LiFXCameraBacklight.config.BrightnessDetection;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ConfigFile;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ScreenLayout;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ScreenLayout.LayoutPosition;
+import net.jiyuu_ni.LiFXCameraBacklight.listener.CamListener;
+import net.jiyuu_ni.LiFXCameraBacklight.listener.DiscoveryListener;
 
 /**
  * Hello world!
@@ -58,11 +60,13 @@ public class App
 	private static final String DEFAULT_MAC_ADDRESS = "00-NO-TR-EA-L0-00";
 	private static final ObjectMapper jsonMapper = new ObjectMapper();
 	private static final Logger logger = LoggerFactory.getLogger(App.class);
+	
 	private static final App currentInstance = new App();
 	
-	// TODO: Watch / handle camera connection / disconnection
-	// TODO: Separate logic so less is being done in "main"
-	
+	/**
+	 * Constructor for `App` class, containing much of the actual logic
+	 * needed to set up webcams and/or LiFX light devices.
+	 */
 	public App() {
 		logger.trace("Entering constructor for App");
 		
@@ -103,7 +107,7 @@ public class App
 		    // Get list of user's selected webcam names
 		    List<String> tempWebcamList = currentConfig.getWebcamList();
 		    
-		    if(tempWebcamList != null && tempWebcamList.size() > 0) {
+		    if(tempWebcamList != null && !tempWebcamList.isEmpty()) {
 		    	webcamList = new ArrayList<Webcam>(tempWebcamList.size());
 			    
 		    	// Populate actual webcam objects from the provided names
@@ -247,38 +251,51 @@ public class App
 	public static void main( String[] args ) throws InterruptedException
     {
     	logger.trace("Entering main");
-    	
-    	//App currentInstance = new App();
   	
+    	// Activate all recorded motion detectors
     	for(WebcamMotionDetector detector : detectorList) {
     		logger.info("Starting motion detector for {}",
     				detector.getWebcam().getName());
 			detector.start();
     	}
     	
+    	// Add listener for new webcam connection/disconnection events
+    	Webcam.addDiscoveryListener(new DiscoveryListener());
+    	
     	if(currentConfig != null && currentConfig.isGUI()) {
+    		// JFrames will block program exit until finished, so no need
+    		//    for special tactics there
     		showUI();
     	}else {
+    		// Activate webcams present in the configuration
     		for(Webcam webcam : webcamList) {
         		logger.info("Activating webcam {}", webcam.getName());
         		webcam.open();
         	}
     		
+    		// Continue working as long as there are active webcams
     		while(webcamList != null && !webcamList.isEmpty()) {
-        		Thread.sleep(50);
+    			try {
+    				Thread.sleep(50);
+    			}catch(InterruptedException e) {
+    				// Allow program to exit gracefully
+    			}
         	}
     	}
     	
     	logger.trace("Exiting main");
     	
-    	// assume SLF4J is bound to logback-classic in the current environment
+    	// Assume SLF4J is bound to logback-classic in the current environment
     	LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     	loggerContext.stop();
     }
 	
+	/**
+	 * Sets network broadcast address used to send UDP discovery packets
+	 * when trying to discover LiFX devices
+	 * @param tempIp IPv4 address to set as the broadcast address
+	 */
 	private void initBroadcast(String tempIp) {
-		// Set network broadcast address used to send UDP discovery
-		//    packets when trying to discover LiFX devices
 		try {
 			// No actual MAC address validity checking, but at least
 			//    sanity checking that the entry isn't null and is at least
@@ -297,6 +314,10 @@ public class App
 		}
 	}
 	
+	/**
+	 * Populate initial, local tracking list of LiFX devices based on all
+	 * devices which respond as being both available and multizone-compatible
+	 */
 	private void populateMultiZoneMap() {
 		multiZoneMap = new HashMap<String, MultiZone>(0);
 		
@@ -310,6 +331,11 @@ public class App
 		}
 	}
     
+	/**
+	 * Show JFrame UI for one or more cameras
+	 * NOTE: No motion detection logic executes when the JFrame is active, which
+	 * also means no lights are actually changed if the GUI is active
+	 */
     private static void showUI() {
     	
     	logger.trace("Entering showUI");
@@ -338,6 +364,10 @@ public class App
 		logger.trace("Exiting showUI");
     }
 	
+    /**
+     * Parses JSON-formatted configuration file into readable format
+     * @return Populated `ConfigFile` class
+     */
 	private ConfigFile loadConfig() {
 		logger.trace("Entering loadConfig");
 		
@@ -359,6 +389,9 @@ public class App
 		return result;
 	}
 	
+	/**
+	 * Save `ConfigFile` into a JSON-formatted configuration file on disk
+	 */
 	private void saveConfig() {
 		logger.trace("Entering saveConfig");
 		logger.debug("{}", currentConfig.toString());
@@ -375,5 +408,62 @@ public class App
 		}
 		
 		logger.trace("Exiting saveConfig");
+	}
+	
+	/**
+	 * Add a `Webcam` to the local list of active cameras if it does not
+	 * already exist in the local list
+	 * @param webcam Webcam to be added into the list
+	 */
+	public static void addActiveWebcam(Webcam webcam) {
+		logger.trace("Entering addActiveWebcam");
+		
+		// If the list of webcams ever completely empties, the program should be
+		//    exiting
+		if(webcamList != null && !webcamList.isEmpty()) {
+			boolean exists = false;
+			
+			// Prevent adding a webcam that already exists in the list
+			for(Webcam tempWebcam : webcamList) {
+				if(tempWebcam.getName().equals(webcam.getName())) {
+					exists = true;
+					break;
+				}
+			}
+			
+			// Add cameras to the list which aren't already there.
+			// There's no need to compare against the current configuration,
+			//    because this program does not choose to start noticing webcam
+			//    connect/disconnect events until after the configuration file is
+			//    already analyzed and synced to the active webcam list (even if
+			//    that means the current config is a new default config).
+			if(!exists) {
+				logger.debug("Adding webcam \"{}\" to active list", webcam.getName());
+				webcamList.add(webcam);
+			}
+		}
+		
+		logger.trace("Exiting addActiveWebcam");
+	}
+	
+	/**
+	 * Remove a webcam from the local list of active webcams if it already
+	 * exists within that list
+	 * @param webcam Webcam to remove from the local list
+	 */
+	public static void removeActiveWebcam(Webcam webcam) {
+		// If the list of webcams ever completely empties, the program should be
+		//    exiting
+		if(webcamList != null && !webcamList.isEmpty()) {
+			
+			// Remove matching camera from the active list, if present
+			for(Webcam tempWebcam : webcamList) {
+				if(tempWebcam.getName().equals(webcam.getName())) {
+					logger.debug("Removing webcam \"{}\" from active list",
+							webcam.getName());
+					webcamList.remove(tempWebcam);
+				}
+			}
+		}
 	}
 }
