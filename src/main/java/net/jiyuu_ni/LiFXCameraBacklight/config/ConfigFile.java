@@ -11,22 +11,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.jiyuu_ni.LiFXCameraBacklight.config.ScreenLayout.LayoutPosition;
 
 public class ConfigFile {
-	// User-configured path to a log file
+	/**
+	 *User-configured path to a log file
+	 */
 	private final Path LOG_FILE_PATH;
 	
-	// User-configured network broadcast IP address
+	/**
+	 * User-configured network broadcast IP address
+	 */
 	private final String NETWORK_BROADCAST_ADDRESS;
 	
-	// List of names representing webcams the user wishes to use
+	/**
+	 * List of names representing webcams the user wishes to use
+	 */
 	private final List<String> WEBCAM_LIST;
 	
-	// List of bindings between a piece of the screen and a light
+	/**
+	 * List of bindings between a piece of the screen and a light
+	 */
 	private final List<ScreenLayout> LAYOUT_LIST;
 	
-	// Brightness detection settings
+	/**
+	 * Brightness detection settings
+	 */
 	private final BrightnessDetection BRIGHTNESS;
 	
-	// Whether to show a preview GUI of the webcam(s)
+	/**
+	 * Whether to show a preview GUI of the webcam(s)
+	 */
 	private final boolean SHOW_GUI;
 	
 	@ConstructorProperties({"log_path", "broadcast_ip_address", "webcam_list",

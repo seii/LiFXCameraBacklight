@@ -6,11 +6,11 @@
 
   <groupId>net.jiyuu_ni</groupId>
   <artifactId>LiFXCameraBacklight</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>LiFXCameraBacklight</name>
-  <description>A simple LiFXCameraBacklight.</description>
-  <url>https://jiyuu-ni.net</url>
+  <description>Control LiFX branded multizone lights using a webcam</description>
+  <url>https://github.com/seii/LiFXCameraBacklight</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

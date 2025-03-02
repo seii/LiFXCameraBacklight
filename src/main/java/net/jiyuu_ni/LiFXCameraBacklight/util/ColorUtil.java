@@ -14,12 +14,13 @@ public class ColorUtil {
 	
 	/**
 	 * Get average color, in RGB values, from a specified portion of an image.
-	 * @param bi
-	 * @param rows
-	 * @param columns
-	 * @param sampleSizeX
-	 * @param sampleSizeY
-	 * @return
+	 * NOTE: All range numbers are inclusive
+	 * @param bi Image to be analyzed
+	 * @param xMin Minimum X coordinate (row start) of area to be analyzed
+	 * @param xMax Maximum X coordinate (row end) of area to be analyzed
+	 * @param yMin Minimum Y coordinate (column start) of area to be analyzed
+	 * @param yMax Maximum Y coordinate (column end) of area to be analyzed
+	 * @return One `java.awt.Color`, in RGB values
 	 */
 	private static java.awt.Color getAverageColor(BufferedImage bi, int xMin,
 			int xMax, int yMin, int yMax) {
@@ -52,16 +53,17 @@ public class ColorUtil {
 	}
 	
 	/**
-	 * Get average color, in RGB value, from specified zone of a BufferedImage
-	 * given a specific LayoutPosition
+	 * Get average color, in RGB values, from a specified portion of an image
+	 * focusing on a named `LayoutPosition` of that image
+	 * NOTE: All range numbers are inclusive
 	 * Based on: https://stackoverflow.com/a/71065493
-	 * @param bi
-	 * @param position
-	 * @param xMin
-	 * @param yMin
-	 * @param sampleSizeX
-	 * @param sampleSizeY
-	 * @return
+	 * @param bi Image to be analyzed
+	 * @param position Specific `ScreenLayout` to analyze
+	 * @param Minimum X coordinate (row start) of area to be analyzed
+	 * @param xMax Maximum X coordinate (row end) of area to be analyzed
+	 * @param yMin Minimum Y coordinate (column start) of area to be analyzed
+	 * @param yMax Maximum Y coordinate (column end) of area to be analyzed
+	 * @return One `java.awt.Color`, in RGB values
 	 */
 	public static java.awt.Color getAverageColor(BufferedImage bi,
 			LayoutPosition position, int xMin, int yMin, int sampleSizeX,
@@ -113,6 +115,13 @@ public class ColorUtil {
 		return getAverageColor(bi, xMin, xMax, yMin, yMax);
 	}
 	
+	/**
+	 * Determine array of colors to send to LiFX multizone-compatible lights
+	 * @param image Image to be analyzed
+	 * @param layout Specific `ScreenLayout` to analyze
+	 * @param numZones Number of individual light zones to calculate
+	 * @return Array of colors to send to LiFX lights
+	 */
 	public static Color[] getColorFromImage(BufferedImage image,
 			LayoutPosition layout, int numZones) {
 		logger.trace("Entering getColorFromImage");
@@ -144,8 +153,9 @@ public class ColorUtil {
 	/**
 	 * Determine if an image is "too dark" based on a provided brightness
 	 * threshold (between 0.0 and 1.0).
-	 * @param image
-	 * @param threshold
+	 * @param image Image to be analyzed
+	 * @param threshold Threshold (between 0.0 and 1.0) at which brightness is
+	 * considered too low for reliable motion detection
 	 */
 	public static boolean isImageTooDark(BufferedImage image, float threshold) {
 		/*
