@@ -120,10 +120,11 @@ public class ColorUtil {
 	 * @param image Image to be analyzed
 	 * @param layout Specific `ScreenLayout` to analyze
 	 * @param numZones Number of individual light zones to calculate
+	 * @param reverse `true` if color should be output in reverse order
 	 * @return Array of colors to send to LiFX lights
 	 */
 	public static Color[] getColorFromImage(BufferedImage image,
-			LayoutPosition layout, int numZones) {
+			LayoutPosition layout, int numZones, boolean reverse) {
 		logger.trace("Entering getColorFromImage");
 		
 		Color[] colorArray = new Color[numZones];
@@ -133,16 +134,32 @@ public class ColorUtil {
 		int numPixelsX = Math.floorDiv(image.getWidth(), numZones);
 		int numPixelsY = Math.floorDiv(image.getHeight(), numZones);
 		
-		for(int i = 0; i < numZones; i++) {
-			// Pass entire original image for calculations and specify where in the
-			//    image to look instead of allocating new sub-images each time this
-			//    calculation is performed
-			java.awt.Color tempColor = getAverageColor(image, layout,
-					numPixelsX * i, numPixelsY * i, numPixelsX, numPixelsY);
-			colorArray[i] = Color.fromRGB(tempColor.getRed(), tempColor.getGreen(),
-					tempColor.getBlue());
-			
-			logger.trace("Color array for zone {} is {}", i, colorArray[i]);
+		// Allow reversing the color output to account for different physical
+		//    lighting layouts (among other possibilities)
+		if(reverse) {
+			for(int i = numZones; i > 0; i--) {
+				// Pass entire original image for calculations and specify where in the
+				//    image to look instead of allocating new sub-images each time this
+				//    calculation is performed
+				java.awt.Color tempColor = getAverageColor(image, layout,
+						numPixelsX * i, numPixelsY * i, numPixelsX, numPixelsY);
+				colorArray[i] = Color.fromRGB(tempColor.getRed(), tempColor.getGreen(),
+						tempColor.getBlue());
+				
+				logger.trace("Color array for zone {} is {}", i, colorArray[i]);
+			}
+		}else {
+			for(int i = 0; i < numZones; i++) {
+				// Pass entire original image for calculations and specify where in the
+				//    image to look instead of allocating new sub-images each time this
+				//    calculation is performed
+				java.awt.Color tempColor = getAverageColor(image, layout,
+						numPixelsX * i, numPixelsY * i, numPixelsX, numPixelsY);
+				colorArray[i] = Color.fromRGB(tempColor.getRed(), tempColor.getGreen(),
+						tempColor.getBlue());
+				
+				logger.trace("Color array for zone {} is {}", i, colorArray[i]);
+			}
 		}
 		
 		logger.trace("Exiting getColorFromImage");

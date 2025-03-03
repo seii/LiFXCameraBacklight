@@ -20,16 +20,27 @@ public class ScreenLayout {
 	 */
 	private final String multiZoneMAC;
 	
+	/**
+	 * Focus is placed on the `CENTER`, `TOP`, `BOTTOM`, `LEFT`, or `RIGHT`
+	 * of the image
+	 */
 	public enum LayoutPosition {
 		CENTER, TOP, BOTTOM, LEFT, RIGHT;
 	}
 	
-	@ConstructorProperties({"position","camera_name","device_mac_address"})
-	public ScreenLayout(LayoutPosition position, String name, String multiZoneMAC) {
+	/**
+	 * Whether to reverse the lighting's direction for this layout
+	 */
+	private final boolean reverse;
+	
+	@ConstructorProperties({"position","camera_name","device_mac_address","reverse"})
+	public ScreenLayout(LayoutPosition position, String name, String multiZoneMAC,
+			boolean reverse) {
 		super();
 		this.position = position;
 		this.cameraName = name;
 		this.multiZoneMAC = multiZoneMAC;
+		this.reverse = reverse;
 	}
 
 	@JsonProperty("position")
@@ -46,6 +57,11 @@ public class ScreenLayout {
 	public String getMultiZoneMAC() {
 		return multiZoneMAC;
 	}
+	
+	@JsonProperty("reverse")
+	public boolean getReverse() {
+		return reverse;
+	}
 
 	@Override
 	public String toString() {
@@ -59,6 +75,9 @@ public class ScreenLayout {
 		sb.append("\n  * ");
 		sb.append("Multi Zone MAC: ");
 		sb.append(multiZoneMAC);
+		sb.append("\n");
+		sb.append("Reverse: ");
+		sb.append(reverse);
 		sb.append("\n");
 		
 		return sb.toString();

@@ -191,14 +191,14 @@ public class App
 					
 					tempScreenLayout = new ScreenLayout(
 							LayoutPosition.CENTER, webcamList.get(0).getName(),
-							tempMultiZone.getMacAddress());
+							tempMultiZone.getMacAddress(), false);
 				}
 				// If there aren't any LiFX devices, populate CENTER with a known
 				//    fake MAC address
 				else {
 					tempScreenLayout = new ScreenLayout(
 							LayoutPosition.CENTER, webcamList.get(0).getName(),
-							DEFAULT_MAC_ADDRESS);
+							DEFAULT_MAC_ADDRESS, false);
 				}
 				
 				logger.info("To configure this program, copy any of the webcam " +

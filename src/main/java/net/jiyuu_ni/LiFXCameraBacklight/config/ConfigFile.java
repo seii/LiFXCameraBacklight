@@ -104,7 +104,7 @@ public class ConfigFile {
 		// Create each possible layout in the default config for demonstration
 		for (LayoutPosition tempPosition : ScreenLayout.LayoutPosition.values()) {
 			ScreenLayout tempLayout = new ScreenLayout(tempPosition, tempDeviceName,
-					"00-NO-TR-EA-L0-00");
+					"00-NO-TR-EA-L0-00", false);
 			tempLayoutList.add(tempLayout);
 		}
 		
