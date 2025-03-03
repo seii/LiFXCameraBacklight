@@ -70,11 +70,15 @@ public class CamListener implements WebcamMotionListener {
             				if(tempZone != null) {
             					logger.debug("Calculating new colors for {}",
                 						layout.getMultiZoneMAC());
-                				
+            					
+            					if(layout.getReverse()) {
+            						logger.debug("Colors are output in reverse");
+            					}
+            					
                 				// Calculate colors to set
                 				Color[] tempColors = ColorUtil.getColorFromImage(image,
                 						layout.getPosition(),
-                						tempZone.getZonesCount());
+                						tempZone.getZonesCount(), layout.getReverse());
                 				
                 				logger.debug("Setting multi-zone colors for {}",
                 						layout.getMultiZoneMAC());
