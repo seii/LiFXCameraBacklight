@@ -137,7 +137,7 @@ public class ColorUtil {
 		// Allow reversing the color output to account for different physical
 		//    lighting layouts (among other possibilities)
 		if(reverse) {
-			for(int i = numZones; i > 0; i--) {
+			for(int i = numZones - 1; i == 0; i--) {
 				// Pass entire original image for calculations and specify where in the
 				//    image to look instead of allocating new sub-images each time this
 				//    calculation is performed
