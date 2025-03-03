@@ -6,7 +6,7 @@
 
   <groupId>net.jiyuu_ni</groupId>
   <artifactId>LiFXCameraBacklight</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <packaging>jar</packaging>
   <name>LiFXCameraBacklight</name>
   <description>Control LiFX branded multizone lights using a webcam</description>

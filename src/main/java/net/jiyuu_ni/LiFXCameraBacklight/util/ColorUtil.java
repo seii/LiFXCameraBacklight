@@ -1,6 +1,8 @@
 package net.jiyuu_ni.LiFXCameraBacklight.util;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,32 +136,22 @@ public class ColorUtil {
 		int numPixelsX = Math.floorDiv(image.getWidth(), numZones);
 		int numPixelsY = Math.floorDiv(image.getHeight(), numZones);
 		
-		// Allow reversing the color output to account for different physical
+		for(int i = 0; i < numZones; i++) {
+			// Pass entire original image for calculations and specify where in the
+			//    image to look instead of allocating new sub-images each time this
+			//    calculation is performed
+			java.awt.Color tempColor = getAverageColor(image, layout,
+					numPixelsX * i, numPixelsY * i, numPixelsX, numPixelsY);
+			colorArray[i] = Color.fromRGB(tempColor.getRed(), tempColor.getGreen(),
+					tempColor.getBlue());
+			
+			logger.trace("Color array for zone {} is {}", i, colorArray[i]);
+		}
+		
+		// Allow reversing the color order to account for different physical
 		//    lighting layouts (among other possibilities)
 		if(reverse) {
-			for(int i = numZones - 1; i == 0; i--) {
-				// Pass entire original image for calculations and specify where in the
-				//    image to look instead of allocating new sub-images each time this
-				//    calculation is performed
-				java.awt.Color tempColor = getAverageColor(image, layout,
-						numPixelsX * i, numPixelsY * i, numPixelsX, numPixelsY);
-				colorArray[i] = Color.fromRGB(tempColor.getRed(), tempColor.getGreen(),
-						tempColor.getBlue());
-				
-				logger.trace("Color array for zone {} is {}", i, colorArray[i]);
-			}
-		}else {
-			for(int i = 0; i < numZones; i++) {
-				// Pass entire original image for calculations and specify where in the
-				//    image to look instead of allocating new sub-images each time this
-				//    calculation is performed
-				java.awt.Color tempColor = getAverageColor(image, layout,
-						numPixelsX * i, numPixelsY * i, numPixelsX, numPixelsY);
-				colorArray[i] = Color.fromRGB(tempColor.getRed(), tempColor.getGreen(),
-						tempColor.getBlue());
-				
-				logger.trace("Color array for zone {} is {}", i, colorArray[i]);
-			}
+			Collections.reverse(Arrays.asList(colorArray));
 		}
 		
 		logger.trace("Exiting getColorFromImage");
