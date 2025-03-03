@@ -43,6 +43,10 @@ During the first run of the program a default log (`LiFXCameraBacklight.log`) an
 
 Optionally, set the `show_gui` option to `true` in the configuration file to display a graphical window (if your system is graphics-enabled) of what each camera sees. (NOTE: This will disable actually changing any light colors via this program until the option is switched back to `false`, and is provided for calibration purposes only.)
 
+## FAQ
+### Why are my light zones showing colors in a different direction than I expect?
+Due to lots of possible differences in both physical and virtual layouts, it's possible to see a light display colors across its zones in "the wrong direction". Simply configure the `reverse` option of that layout to `true` to resolve this as it happens to suit your setup.
+
 ## Building
 ### Required Software
 - Java 11 (or higher) Java Development Kit
