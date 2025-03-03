@@ -4,6 +4,13 @@ With this program one or more cameras (typically webcams) attached to a computer
 
 When it comes to driving LED lights based on what's playing on the TV, I love the idea of the [Govee Backlight](https://us.govee.com/products/govee-tv-backlight-3-lite-kit) product series. However, I happened to already have some [LiFX lights](https://www.lifx.com/collections/beam) instead and wasn't ready to re-purchase all of my smart lights just to take advantage of a single feature. Instead, what if a simple webcam could be used to replicate much of the same effects, but using the local API for LiFX lights?
 
+## Demo
+(NOTE: Yes, the right side is rendering colors upside down in the video due to a bug.)
+
+https://github.com/user-attachments/assets/bb22cb8b-a77f-4796-af13-c8dfd4f137e2
+
+
+
 ## Features
 - Auto-detection of all available cameras and LiFX lights
 - Auto-detection of webcam connect/disconnect events
